@@ -2,7 +2,9 @@ import uuid
 import time
 from enums.task_type import *
 from enums.mode_of_execution import *
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC
+from constraints.constraint_main.constraint import *
+from enums.stage_status import StageStatus
 
 
 class Task(ABC):
@@ -25,7 +27,7 @@ class Task(ABC):
         self.task_type: TaskType = None
 
         # The stage the task is currently at
-        self.stage_status = None
+        self.stage_status: StageStatus = None
 
         # The constraint/stage configuration being used by the tasl
         self.constraint_stage_config = None
@@ -34,7 +36,7 @@ class Task(ABC):
         self.mode_of_execution: ModeOfExecution = None
 
         # The constraint for the customer to provide compensation for the service/product they recieved. This could be monetary or otherwise.
-        self.price_constraint = None
+        self.price_constraint: Constraint = None
 
         # A link to the assets used by the task
         self.graphical_assets = None
