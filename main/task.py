@@ -5,6 +5,7 @@ from enums.mode_of_execution import *
 from abc import ABC
 from constraints.constraint_main.constraint import *
 from enums.stage_status import StageStatus
+from stage.stage import StageGroup
 
 
 class Task(ABC):
@@ -30,7 +31,7 @@ class Task(ABC):
         self.stage_status: StageStatus = None
 
         # The constraint/stage configuration being used by the tasl
-        self.constraint_stage_config = None
+        self.constraint_stage_config: StageGroup = None
 
         # How the task will be provided to the customer
         self.mode_of_execution: ModeOfExecution = None
