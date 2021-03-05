@@ -53,15 +53,16 @@ class Pipeline:
 
         return active_constraints
 
-    def start_constraint(self, constraint_name):
-        for stage in self.constraint_config.stages:
-            constraint = stage.get_constraint(constraint_name)
+    def start_constraint(self, stage_name, constraint_name):
+        self.constraint_config._get_stage_with_name(stage_name).start_constraint(
+            constraint_name)
 
-            if constraint.get_status() == ConstraintStatus.NOT_STARTED:
-                constraint.start()
+    def stop_constraint(self, stage_name, constraint_name):
+        self.constraint_config._get_stage_with_name(
+            stage_name).stop_constraint(constraint_name)
 
-    def start_from_scratch(self):
-        self.constraint_config.stages[0].start()
+    def start(self, stage_name=""):
+        self.constraint_config.start(stage_name)
 
     def start_stage(self, stage_name):
         self.constraint_config.start(stage_name)

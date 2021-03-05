@@ -1,6 +1,9 @@
 /.vscode/
 /.idea/
 main/__pycache__/
+main/enums/__pycache__/
+inventory_main/__pycache__/
+task_pipeline/__pycache__/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
