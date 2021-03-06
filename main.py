@@ -1,3 +1,4 @@
+from task_model import TaskModel
 from task_pipeline.pipeline import Pipeline
 from main.task import *
 from inventory_main.inventory import Inventory, Entry
@@ -17,8 +18,7 @@ constraint2 = CustomConstraint("test2", TestModel())
 constraint3 = CustomConstraint("test1", TestModel())
 constraint3.add_input(4)
 
-pause_constraint = CustomConstraint("time constraint", PauseModel())
-pause_constraint.add_input(20)
+task_constraint = CustomConstraint("task constraint", TaskModel())
 
 combined_constraint = CustomConstraint(
     "combined constraint", TestCombinedConstraintModel(), debug=True)
@@ -26,7 +26,7 @@ combined_constraint.add_input(constraint1)
 combined_constraint.add_input(constraint2)
 
 stage = Stage("PENDING")
-stage.add_constraint(pause_constraint)
+stage.add_constraint(task_constraint)
 
 stage2 = Stage("ACTIVE")
 stage2.add_constraint(combined_constraint)
@@ -51,8 +51,10 @@ new_task.set_mode_of_execution(ModeOfExecution.ONLINE)
 new_task.set_price_constraint(combined_constraint)
 
 pipeline = Pipeline(new_task, new_task.constraint_stage_config)
+# pipeline.log()
 pipeline.start("PENDING")
-pipeline.start_constraint("PENDING", "time constraint")
+pipeline.start_constraint("PENDING", "task constraint")
+pipeline.log()
 # time.sleep(2)
 # pipeline.stop_constraint("PENDING", "time constraint")
-pipeline.start_constraint("ACTIVE", "combined constraint")
+# pipeline.start_constraint("ACTIVE", "combined constraint")

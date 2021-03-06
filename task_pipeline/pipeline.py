@@ -22,6 +22,12 @@ class Pipeline:
             raise Exception(
                 "The task passed to the Pipeline object cannot be null")
 
+        self.init_task_for_stages()
+
+    def init_task_for_stages(self):
+        for stage in self.constraint_config.stages:
+            self.constraint_config.set_task_for_stage(stage.name, self.task)
+
     def get_task_name(self):
         return self.task.name
 
