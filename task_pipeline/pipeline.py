@@ -1,3 +1,4 @@
+import threading
 from constraints.enums.constraint_status import ConstraintStatus
 from inventory_main.inventory import Entry
 from main.enums.mode_of_execution import ModeOfExecution
@@ -17,6 +18,8 @@ class Pipeline:
         self.current_stage: Stage = None
         self.task = task
         self.constraint_config = constraint_config
+
+        self.thread_ref = None
 
         if self.task == None:
             raise Exception(
@@ -67,14 +70,22 @@ class Pipeline:
         self.constraint_config._get_stage_with_name(
             stage_name).stop_constraint(constraint_name)
 
-    def start(self, stage_name=""):
+    def _start(self, stage_name=""):
         self.constraint_config.start(stage_name)
+
+    def start(self, stage_name=""):
+        self.thread_ref = threading.Thread(
+            target=self._start, args=stage_name, daemon=True)
+        self.thread_ref.start()
 
     def start_stage(self, stage_name):
         self.constraint_config.start(stage_name)
 
+    def abort(self):
+        self.constraint_config.stop_all()
+
     def stop_stage(self, stage_name):
-        pass
+        self.constraint_config.stop_stage(stage_name)
 
     def pause_stage(self):
         self.current_stage.freeze()
