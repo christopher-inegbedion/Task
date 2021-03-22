@@ -9,6 +9,7 @@ from constraints.models.example_models.test_model import TestModel
 from constraints.models.example_models.pause_thread import PauseModel
 from constraints.models.example_models.test_combined_constraint import TestCombinedConstraintModel
 from stage.stage import Stage
+from utils.update import Observer
 
 
 constraint1 = CustomConstraint("test1", TestModel())
@@ -18,6 +19,11 @@ constraint2 = CustomConstraint("test2", TestModel())
 constraint3 = CustomConstraint("test1", TestModel())
 constraint3.add_input(4)
 
+time_constraint = CustomConstraint(
+    "time", PauseModel(), debug=True
+)
+time_constraint.add_input(20)
+
 task_constraint = CustomConstraint("task constraint", TaskModel())
 
 combined_constraint = CustomConstraint(
@@ -26,10 +32,11 @@ combined_constraint.add_input(constraint1)
 combined_constraint.add_input(constraint2)
 
 stage = Stage("PENDING")
-stage.add_constraint(task_constraint)
+stage.add_constraint(time_constraint)
+stage.add_constraint(combined_constraint)
 
 stage2 = Stage("ACTIVE")
-stage2.add_constraint(combined_constraint)
+# stage2.add_constraint(combined_constraint)
 
 stage_group = StageGroup()
 stage_group.add_stage(stage)
@@ -53,7 +60,10 @@ new_task.set_price_constraint(combined_constraint)
 pipeline = Pipeline(new_task, new_task.constraint_stage_config)
 # pipeline.log()
 pipeline.start()
-# pipeline.start_constraint("PENDING", "task constraint")
+# pipeline.start_constraint()
+
+pipeline.start_constraint("PENDING", "time")
+pipeline.start_constraint("PENDING", "combined constraint")
 # pipeline.log()
 # time.sleep(2)
 # pipeline.stop_constraint("PENDING", "time constraint")

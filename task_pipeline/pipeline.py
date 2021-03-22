@@ -9,10 +9,11 @@ from constraints.constraint_main.constraint import Constraint
 from main.task import Task
 import uuid
 import time
+from utils.update import Observer
 
 
-class Pipeline:
-    def __init__(self, task: Task, constraint_config: StageGroup):
+class Pipeline(Observer):
+    def __init__(self, task: Task, constraint_config: StageGroup, display_log=False):
         self.id = uuid.uuid4()
         self.date_started = time.time()
         self.current_stage: Stage = None
@@ -20,12 +21,23 @@ class Pipeline:
         self.constraint_config = constraint_config
 
         self.thread_ref = None
+        self._display_log = display_log
 
         if self.task == None:
             raise Exception(
                 "The task passed to the Pipeline object cannot be null")
 
         self.init_task_for_stages()
+        self.set_pipeline_for_stages()
+
+    def on_update(self, observer) -> None:
+        """Notifies the Stage of a change in the Constraint"""
+        if self._display_log:
+            print(observer.most_recent_update)
+
+    def set_pipeline_for_stages(self):
+        for stage in self.constraint_config.stages:
+            stage.set_pipeline(self)
 
     def init_task_for_stages(self):
         for stage in self.constraint_config.stages:
@@ -75,7 +87,7 @@ class Pipeline:
 
     def start(self, stage_name=""):
         self.thread_ref = threading.Thread(
-            target=self._start, args=stage_name, daemon=True)
+            target=self._start, args=stage_name)
         self.thread_ref.start()
 
     def start_stage(self, stage_name):
