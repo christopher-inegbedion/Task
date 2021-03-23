@@ -3,14 +3,14 @@ from task_pipeline.pipeline import Pipeline
 from constraints.constraint_main.constraint import Constraint
 from constraints.constraint_main.custom_constraint import CustomConstraint
 from typing import List
-# import requests
+import requests
 from constraints.models.example_models.test_model import TestModel
 from constraints.models.model_parent import Model
 from stage.stage import Stage, StageGroup
 from constraints.enums.constraint_input_mode import ConstraintInputMode
 import time
 
-addr = "192.168.1.129:5000/"
+addr = "http://192.168.1.129:8000/"
 
 started = False
 stages: List[Stage] = []
@@ -35,6 +35,31 @@ def main():
             return False
         else:
             parse_action(action)
+
+
+def perform_network_request(url, action):
+    if action == "get":
+        r = requests.get(url)
+    elif action == "post":
+        r = requests.post(url)
+
+    if r.status_code == 200:
+        response = r.json()
+        return response
+
+    return False
+
+
+def parse_network_action(action):
+    if action == "exit":
+        return False
+    elif action == "commands":
+        command_addr = addr + f"commands/{action}"
+        response = perform_network_request(command_addr, "get")
+
+        print()
+        for command in response["available_commands"]:
+            print(command)
 
 
 def parse_action(action):
