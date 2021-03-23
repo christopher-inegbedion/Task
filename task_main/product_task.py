@@ -1,6 +1,6 @@
 from inventory_main.inventory import Inventory
-from main.enums.task_type import TaskType
-from main.task import Task
+from task_main.enums.task_type import TaskType
+from task_main.task import Task
 
 
 class ProductTask(Task):

@@ -1,9 +1,9 @@
 from task_model import TaskModel
 from task_pipeline.pipeline import Pipeline
-from main.task import *
+from task_main.task import *
 from inventory_main.inventory import Inventory, Entry
-from main.task import Task
-from main.product_task import ProductTask
+from task_main.task import Task
+from task_main.product_task import ProductTask
 from constraints.constraint_main.custom_constraint import CustomConstraint
 from constraints.models.example_models.test_model import TestModel
 from constraints.models.example_models.pause_thread import PauseModel
@@ -22,7 +22,7 @@ constraint3.add_input(4)
 time_constraint = CustomConstraint(
     "time", PauseModel(), debug=True
 )
-time_constraint.add_input(20)
+time_constraint.add_input(1)
 
 task_constraint = CustomConstraint("task constraint", TaskModel())
 

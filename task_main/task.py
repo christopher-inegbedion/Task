@@ -1,10 +1,10 @@
 import uuid
 import time
-from main.enums.task_type import *
-from main.enums.mode_of_execution import *
+from task_main.enums.task_type import *
+from task_main.enums.mode_of_execution import *
 from abc import ABC
 from constraints.constraint_main.constraint import *
-from main.enums.stage_status import StageStatus
+from task_main.enums.stage_status import StageStatus
 from stage.stage import StageGroup
 
 

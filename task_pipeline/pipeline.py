@@ -1,12 +1,12 @@
 import threading
 from constraints.enums.constraint_status import ConstraintStatus
 from inventory_main.inventory import Entry
-from main.enums.mode_of_execution import ModeOfExecution
+from task_main.enums.mode_of_execution import ModeOfExecution
 from stage.stage import Stage, StageGroup
-from main.product_task import ProductTask
-from main.enums.task_type import TaskType
+from task_main.product_task import ProductTask
+from task_main.enums.task_type import TaskType
 from constraints.constraint_main.constraint import Constraint
-from main.task import Task
+from task_main.task import Task
 import uuid
 import time
 from utils.update import Observer

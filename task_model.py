@@ -1,5 +1,5 @@
 from constraints.models.model_parent import *
-from main.product_task import ProductTask
+from task_main.product_task import ProductTask
 
 
 class TaskModel(Model):
