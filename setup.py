@@ -2,7 +2,7 @@ from setuptools import setup, setuptools
 
 setup(
     # Needed to silence warnings (and to be a worthwhile package)
-    name='Constraints/Stages',
+    name='Taskr-Task',
     url='https://github.com/christopher-inegbedion/Task',
     author='Christopher E. Inegbedion',
     author_email='eromoseleinegbe@gmail.com',
