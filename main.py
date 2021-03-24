@@ -20,14 +20,14 @@ constraint3 = CustomConstraint("test1", TestModel())
 constraint3.add_input(4)
 
 time_constraint = CustomConstraint(
-    "time", PauseModel(), debug=True
+    "time", PauseModel()
 )
 time_constraint.add_input(1)
 
 task_constraint = CustomConstraint("task constraint", TaskModel())
 
 combined_constraint = CustomConstraint(
-    "combined constraint", TestCombinedConstraintModel(), debug=True)
+    "combined constraint", TestCombinedConstraintModel())
 combined_constraint.add_input(constraint1)
 combined_constraint.add_input(constraint2)
 
@@ -57,7 +57,7 @@ new_task.set_constraint_stage_config(stage_group)
 new_task.set_mode_of_execution(ModeOfExecution.ONLINE)
 new_task.set_price_constraint(combined_constraint)
 
-pipeline = Pipeline(new_task, new_task.constraint_stage_config)
+pipeline = Pipeline(new_task, new_task.constraint_stage_config, True)
 # pipeline.log()
 pipeline.start()
 # pipeline.start_constraint()
