@@ -45,6 +45,12 @@ class Pipeline(Observer):
 
     def on_update(self, func):
         self.stage_log_callback = func
+    
+    def set_customer_id(self, id):
+        self.customer_user_id = id
+    
+    def set_provider_id(self, id):
+        self.service_provider_user_id = id
 
     def set_pipeline_for_stages(self):
         for stage in self.constraint_config.stages:
