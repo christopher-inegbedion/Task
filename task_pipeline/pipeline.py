@@ -14,7 +14,7 @@ from task_pipeline.update_abclass import Observer
 
 class Pipeline(Observer):
     def __init__(self, task: Task, constraint_config: StageGroup, display_log=False):
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.date_started = time.time()
         self.current_stage: Stage = None
         self.task = task
