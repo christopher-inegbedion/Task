@@ -22,7 +22,6 @@ constraint3.add_input(4)
 time_constraint = CustomConstraint(
     "time", PauseModel()
 )
-time_constraint.add_input(1)
 
 task_constraint = CustomConstraint("task constraint", TaskModel())
 
@@ -60,7 +59,8 @@ new_task.set_price_constraint(combined_constraint)
 pipeline = Pipeline(new_task, new_task.constraint_stage_config, True)
 # pipeline.log()
 pipeline.start()
-# pipeline.start_constraint()
+
+pipeline.add_input_to_constraint("time", "PENDING", 33)
 
 pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")

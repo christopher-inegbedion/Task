@@ -45,16 +45,32 @@ class Pipeline(Observer):
 
     def on_update(self, func):
         self.stage_log_callback = func
-    
+
     def set_customer_id(self, id):
         self.customer_user_id = id
-    
+
     def set_provider_id(self, id):
         self.service_provider_user_id = id
 
     def set_pipeline_for_stages(self):
         for stage in self.constraint_config.stages:
             stage.set_pipeline(self)
+
+    def is_input_req_for_constraint(self, constraint_name, stage_name):
+        constraint = self.get_constraint(constraint_name, stage_name)
+        return constraint.model.initial_input_required
+
+    def add_input_to_constraint(self, constraint_name, stage_name, input):
+        constraint = self.get_constraint(constraint_name, stage_name)
+        constraint.add_input(input)
+
+    def get_constraint(self, constraint_name, stage_name):
+        stage = self.get_stage(stage_name)
+        constraint = stage.get_constraint(constraint_name)
+        return constraint
+
+    def get_stage(self, stage_name):
+        return self.constraint_config._get_stage_with_name(stage_name)
 
     def init_task_for_stages(self):
         for stage in self.constraint_config.stages:
