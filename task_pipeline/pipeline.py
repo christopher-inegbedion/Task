@@ -64,6 +64,10 @@ class Pipeline(Observer):
         constraint = self.get_constraint(constraint_name, stage_name)
         constraint.add_input(input)
 
+    def get_number_of_inputs_required_by_constraints(self, constraint_name, stage_name):
+        constraint = self.get_constraint(constraint_name, stage_name)
+        return constraint.model.input_count
+
     def get_constraint(self, constraint_name, stage_name):
         stage = self.get_stage(stage_name)
         constraint = stage.get_constraint(constraint_name)
