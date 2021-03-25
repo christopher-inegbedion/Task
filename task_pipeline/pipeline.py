@@ -19,6 +19,7 @@ class Pipeline(Observer):
         self.current_stage: Stage = None
         self.task = task
         self.constraint_config = constraint_config
+        self.all_inputs_passed = []
 
         self.thread_ref = None
         self._display_log = display_log
@@ -63,6 +64,7 @@ class Pipeline(Observer):
     def add_input_to_constraint(self, constraint_name, stage_name, input):
         constraint = self.get_constraint(constraint_name, stage_name)
         constraint.add_input(input)
+        self.all_inputs_passed.append(input)
 
     def get_number_of_inputs_required_by_constraints(self, constraint_name, stage_name):
         constraint = self.get_constraint(constraint_name, stage_name)

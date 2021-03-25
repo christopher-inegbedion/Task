@@ -60,7 +60,7 @@ pipeline = Pipeline(new_task, new_task.constraint_stage_config, True)
 # pipeline.log()
 pipeline.start()
 
-pipeline.add_input_to_constraint("time", "PENDING", 33)
+# pipeline.add_input_to_constraint("time", "PENDING", 33)
 
 pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")
