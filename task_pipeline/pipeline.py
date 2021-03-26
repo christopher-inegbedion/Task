@@ -10,6 +10,7 @@ from task_main.task import Task
 import uuid
 import time
 from task_pipeline.update_abclass import Observer
+import asyncio
 
 
 class Pipeline(Observer):
@@ -36,6 +37,7 @@ class Pipeline(Observer):
         self.set_pipeline_for_stages()
         self.on_update_args = None
         self.stage_log_callback = None
+        self.async_func = False
 
     def update(self, observer) -> None:
         """Notifies the Stage of a change in the Constraint"""
@@ -43,9 +45,13 @@ class Pipeline(Observer):
             print(observer.most_recent_update)
 
         if self.stage_log_callback is not None:
-            self.stage_log_callback(self, self.on_update_args)
+            if self.async_func:
+                asyncio.run(self.stage_log_callback(self, self.on_update_args))
+            else:
+                self.stage_log_callback(self, self.on_update_args)
 
-    def on_update(self, func, *args):
+    def on_update(self, async_func, func, *args):
+        self.async_func = async_func
         self.stage_log_callback = func
         self.on_update_args = args
 
