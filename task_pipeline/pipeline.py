@@ -34,6 +34,7 @@ class Pipeline(Observer):
 
         self.init_task_for_stages()
         self.set_pipeline_for_stages()
+        self.on_update_args = None
         self.stage_log_callback = None
 
     def update(self, observer) -> None:
@@ -42,10 +43,11 @@ class Pipeline(Observer):
             print(observer.most_recent_update)
 
         if self.stage_log_callback is not None:
-            self.stage_log_callback(self)
+            self.stage_log_callback(self, self.on_update_args)
 
-    def on_update(self, func):
+    def on_update(self, func, *args):
         self.stage_log_callback = func
+        self.on_update_args = args
 
     def set_customer_id(self, id):
         self.customer_user_id = id

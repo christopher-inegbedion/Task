@@ -60,7 +60,14 @@ pipeline = Pipeline(new_task, new_task.constraint_stage_config, True)
 # pipeline.log()
 pipeline.start()
 
-# pipeline.add_input_to_constraint("time", "PENDING", 33)
+pipeline.add_input_to_constraint("time", "PENDING", 33)
+
+
+# def react(pipe, args):
+#     print(args[0], args[1])
+
+
+# pipeline.on_update(react, "hello", 121, 2, 3)
 
 pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")
