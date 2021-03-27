@@ -46,14 +46,19 @@ class Pipeline(Observer):
 
         if self.stage_log_callback is not None:
             if self.async_func:
-                if asyncio.get_event_loop() == None:
-                    asyncio.run(self.stage_log_callback(
-                        self, self.on_update_args))
-                else:
-                    asyncio.get_event_loop().run_until_complete(
+                asyncio.get_or_create_eventloop().run_until_complete(
                         self.stage_log_callback(self, self.on_update_args))
             else:
                 self.stage_log_callback(self, self.on_update_args)
+    
+    def get_or_create_eventloop():
+        try:
+            return asyncio.get_event_loop()
+        except RuntimeError as ex:
+            if "There is no current event loop in thread" in str(ex):
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                return asyncio.get_event_loop()
 
     def on_update(self, async_func, func, *args):
         self.async_func = async_func
