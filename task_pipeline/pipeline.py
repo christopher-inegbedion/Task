@@ -51,7 +51,7 @@ class Pipeline(Observer):
             else:
                 self.stage_log_callback(self, self.on_update_args)
 
-    def get_or_create_eventloop():
+    def get_or_create_eventloop(self):
         try:
             return asyncio.get_event_loop()
         except RuntimeError as ex:
