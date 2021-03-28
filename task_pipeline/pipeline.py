@@ -22,6 +22,9 @@ class Pipeline(Observer):
         self.constraint_config = constraint_config
         self.all_inputs_passed = []
 
+        self.init_task_for_stages()
+        self.set_pipeline_for_stages()
+
         self.thread_ref = None
         self._display_log = display_log
 
@@ -33,8 +36,6 @@ class Pipeline(Observer):
             raise Exception(
                 "The task passed to the Pipeline object cannot be null")
 
-        self.init_task_for_stages()
-        self.set_pipeline_for_stages()
         self.on_update_args = None
         self.stage_log_callback = None
         self.async_func = False
@@ -45,23 +46,9 @@ class Pipeline(Observer):
             print(observer.most_recent_update)
 
         if self.stage_log_callback is not None:
-            if self.async_func:
-                self.get_or_create_eventloop().run_until_complete(
-                    self.stage_log_callback(self, self.on_update_args))
-            else:
-                self.stage_log_callback(self, self.on_update_args)
+            self.stage_log_callback(self, self.on_update_args)
 
-    def get_or_create_eventloop(self):
-        try:
-            return asyncio.get_event_loop()
-        except RuntimeError as ex:
-            if "There is no current event loop in thread" in str(ex):
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                return asyncio.get_event_loop()
-
-    def on_update(self, async_func, func, *args):
-        self.async_func = async_func
+    def on_update(self, func, *args):
         self.stage_log_callback = func
         self.on_update_args = args
 
