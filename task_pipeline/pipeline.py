@@ -11,6 +11,7 @@ import uuid
 import time
 from task_pipeline.update_abclass import Observer
 import asyncio
+from constraints.enums.stage_group_status import StageGroupEnum
 
 
 class Pipeline(Observer):
@@ -36,8 +37,12 @@ class Pipeline(Observer):
             raise Exception(
                 "The task passed to the Pipeline object cannot be null")
 
-        self.on_update_args = None
         self.stage_log_callback = None
+        self.on_update_args = None
+
+        self.stage_complete_callback = None
+        self.on_complete_args = None
+
         self.async_func = False
 
     def update(self, observer) -> None:
@@ -48,9 +53,16 @@ class Pipeline(Observer):
         if self.stage_log_callback is not None:
             self.stage_log_callback(self, self.on_update_args)
 
+        if self.constraint_config.status == StageGroupEnum.COMPLETE:
+            self.stage_complete_callback(self, self.on_complete_args)
+
     def on_update(self, func, *args):
         self.stage_log_callback = func
         self.on_update_args = args
+
+    def on_complete(self, func, *args):
+        self.stage_complete_callback = func
+        self.on_complete_args = args
 
     def set_customer_id(self, id):
         self.customer_user_id = id

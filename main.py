@@ -39,7 +39,7 @@ stage2 = Stage("ACTIVE")
 
 stage_group = StageGroup()
 stage_group.add_stage(stage)
-stage_group.add_stage(stage2)
+# stage_group.add_stage(stage2)
 
 
 shoes_entry = Entry()
@@ -64,10 +64,11 @@ pipeline.add_input_to_constraint("time", "PENDING", 33)
 
 
 def react(pipe, args):
-    print(pipe.current_stage.log.most_recent_update)
+    print("-", pipe.current_stage.log.most_recent_update)
+    pass
 
 
-pipeline.on_update(react)
+pipeline.on_complete(react)
 
 pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")
