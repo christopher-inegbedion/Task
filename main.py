@@ -31,7 +31,7 @@ combined_constraint.add_input(constraint1)
 combined_constraint.add_input(constraint2)
 
 stage = Stage("PENDING")
-stage.add_constraint(time_constraint)
+# stage.add_constraint(time_constraint)
 stage.add_constraint(combined_constraint)
 
 stage2 = Stage("ACTIVE")
@@ -60,7 +60,7 @@ pipeline = Pipeline(new_task, new_task.constraint_stage_config, False)
 # pipeline.log()
 pipeline.start()
 
-pipeline.add_input_to_constraint("time", "PENDING", 33)
+# pipeline.add_input_to_constraint("time", "PENDING", 33)
 
 
 def react(pipe, args):
@@ -68,9 +68,9 @@ def react(pipe, args):
     pass
 
 
-pipeline.on_constraint_complete(react, "test1")
+pipeline.on_constraint_complete(react)
 
-pipeline.start_constraint("PENDING", "time")
+# pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")
 # pipeline.log()
 # time.sleep(2)
