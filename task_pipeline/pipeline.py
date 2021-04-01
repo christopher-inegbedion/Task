@@ -86,7 +86,7 @@ class Pipeline(Observer):
         if self.stage_log_callback is not None:
             self.stage_log_callback(self, self.on_update_args)
 
-        if self.stage_log_callback != None:
+        if self.pipeline_complete_callback is not None:
             if self.constraint_config.status == StageGroupEnum.COMPLETE:
                 self.pipeline_complete_callback(self, self.on_complete_args)
 
