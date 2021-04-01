@@ -49,6 +49,11 @@ class Pipeline(Observer):
         self.specific_stage_callback = None
         self.specific_stage_args = None
 
+        self.waiting_for_specific_constraint = False
+        self.on_constraint_complete_constraint_name = ""
+        self.specific_constraint_callback = None
+        self.specific_constraint_args = None
+
         self.async_func = False
 
     def update(self, observer) -> None:
@@ -67,6 +72,17 @@ class Pipeline(Observer):
                 else:
                     self.specific_stage_callback(
                         self, self.specific_stage_args)
+
+        if self.specific_constraint_callback is not None:
+            if most_recent_update["event"] == "STAGE_CONSTRAINT_COMPLETED":
+                if self.waiting_for_specific_constraint:
+                    if most_recent_update["value"] == self.on_constraint_complete_constraint_name:
+                        self.specific_constraint_callback(
+                            self, self.specific_constraint_args)
+                else:
+                    self.specific_constraint_callback(
+                        self, self.specific_constraint_args
+                    )
 
         if self.stage_log_callback is not None:
             self.stage_log_callback(self, self.on_update_args)
@@ -92,6 +108,16 @@ class Pipeline(Observer):
     def on_complete(self, func, *args):
         self.pipeline_complete_callback = func
         self.on_complete_args = args
+
+    def on_constraint_complete(self, func, constraint_name="", *args):
+        if constraint_name == "":
+            self.waiting_for_specific_constraint = False
+        else:
+            self.waiting_for_specific_constraint = True
+            self.on_constraint_complete_constraint_name = constraint_name
+
+        self.specific_constraint_callback = func
+        self.specific_constraint_args = args
 
     def set_customer_id(self, id):
         self.customer_user_id = id
