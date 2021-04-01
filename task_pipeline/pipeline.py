@@ -108,7 +108,7 @@ class Pipeline(Observer):
         self.pipeline_complete_callback = func
         self.on_complete_args = args
 
-    def on_constraint_complete(self, func, constraint_name="", *args):
+    def on_constraint_complete(self, func, *args, constraint_name=""):
         if constraint_name == "":
             self.waiting_for_specific_constraint = False
         else:
