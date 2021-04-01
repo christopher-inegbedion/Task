@@ -1,5 +1,6 @@
 import threading
 from constraints.enums.constraint_status import ConstraintStatus
+from constraints.enums.stage_events import StageEvents
 from inventory_main.inventory import Entry
 from task_main.enums.mode_of_execution import ModeOfExecution
 from stage.stage import Stage, StageGroup
@@ -40,28 +41,56 @@ class Pipeline(Observer):
         self.stage_log_callback = None
         self.on_update_args = None
 
-        self.stage_complete_callback = None
+        self.pipeline_complete_callback = None
         self.on_complete_args = None
+
+        self.waiting_for_specific_stage = False
+        self.specific_stage_update_name = ""
+        self.specific_stage_callback = None
+        self.specific_stage_args = None
 
         self.async_func = False
 
     def update(self, observer) -> None:
         """Notifies the Stage of a change in the Constraint"""
+        most_recent_update = observer.most_recent_update
+
         if self._display_log:
             print(observer.most_recent_update)
+
+        if self.specific_stage_callback is not None:
+            if most_recent_update["event"] == "STAGE_COMPLETED":
+                if self.waiting_for_specific_stage:
+                    if most_recent_update["value"] == self.specific_stage_update_name:
+                        self.specific_stage_callback(
+                            self, self.specific_stage_args)
+                else:
+                    self.specific_stage_callback(
+                        self, self.specific_stage_args)
 
         if self.stage_log_callback is not None:
             self.stage_log_callback(self, self.on_update_args)
 
-        if self.constraint_config.status == StageGroupEnum.COMPLETE:
-            self.stage_complete_callback(self, self.on_complete_args)
+        if self.stage_log_callback != None:
+            if self.constraint_config.status == StageGroupEnum.COMPLETE:
+                self.pipeline_complete_callback(self, self.on_complete_args)
 
     def on_update(self, func, *args):
         self.stage_log_callback = func
         self.on_update_args = args
 
+    def on_stage_complete(self, func, stage_name="", *args):
+        if stage_name == "":
+            self.waiting_for_specific_stage = False
+        else:
+            self.waiting_for_specific_stage = True
+            self.specific_stage_update_name = stage_name
+
+        self.specific_stage_callback = func
+        self.specific_stage_args = args
+
     def on_complete(self, func, *args):
-        self.stage_complete_callback = func
+        self.pipeline_complete_callback = func
         self.on_complete_args = args
 
     def set_customer_id(self, id):

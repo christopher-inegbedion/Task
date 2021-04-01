@@ -56,7 +56,7 @@ new_task.set_constraint_stage_config(stage_group)
 new_task.set_mode_of_execution(ModeOfExecution.ONLINE)
 new_task.set_price_constraint(combined_constraint)
 
-pipeline = Pipeline(new_task, new_task.constraint_stage_config, False)
+pipeline = Pipeline(new_task, new_task.constraint_stage_config, True)
 # pipeline.log()
 pipeline.start()
 
@@ -68,7 +68,7 @@ def react(pipe, args):
     pass
 
 
-pipeline.on_complete(react)
+pipeline.on_stage_complete(react)
 
 pipeline.start_constraint("PENDING", "time")
 pipeline.start_constraint("PENDING", "combined constraint")
