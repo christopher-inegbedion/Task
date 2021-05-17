@@ -16,7 +16,7 @@ constraint1 = CustomConstraint("test1", TestModel())
 constraint1.add_input(4)
 constraint2 = CustomConstraint("test2", TestModel())
 
-constraint3 = CustomConstraint("test1", TestModel())
+constraint3 = CustomConstraint("test3", TestModel())
 constraint3.add_input(4)
 
 time_constraint = CustomConstraint(
@@ -33,9 +33,6 @@ combined_constraint.add_input(constraint2)
 stage = Stage("PENDING")
 # stage.add_constraint(time_constraint)
 stage.add_constraint(combined_constraint)
-
-stage2 = Stage("ACTIVE")
-# stage2.add_constraint(combined_constraint)
 
 stage_group = StageGroup()
 stage_group.add_stage(stage)
@@ -57,8 +54,10 @@ new_task.set_mode_of_execution(ModeOfExecution.ONLINE)
 new_task.set_price_constraint(combined_constraint)
 
 pipeline = Pipeline(new_task, new_task.constraint_stage_config, False)
+new_task.add_constraint_to_stage(constraint3, "PENDING")
+
 # pipeline.log()
-pipeline.start()
+
 
 # pipeline.add_input_to_constraint("time", "PENDING", 33)
 
@@ -68,11 +67,10 @@ def react(pipe, args):
     pass
 
 
-pipeline.on_constraint_complete(react)
+pipeline.on_constraint_complete(
+    react, "sd", "sdf")
 
-# pipeline.start_constraint("PENDING", "time")
+# pipeline.start()
+pipeline.start_stage("PENDING")
 pipeline.start_constraint("PENDING", "combined constraint")
-# pipeline.log()
-# time.sleep(2)
-# pipeline.stop_constraint("PENDING", "time constraint")
-# pipeline.start_constraint("ACTIVE", "combined constraint")
+pipeline.start_constraint("PENDING", "test3")

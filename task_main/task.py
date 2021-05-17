@@ -47,6 +47,12 @@ class Task(ABC):
 
     def change_desc(self, desc):
         self.description = desc
+    
+    def add_constraint_to_stage(self, constraint, stage_name):
+        self.constraint_stage_config._get_stage_with_name(stage_name).add_constraint(constraint)
+    
+    def add_stage(self, stage):
+        self.constraint_stage_config.add_stage(stage)
 
     def set_constraint_stage_config(self, constraint_config: StageGroup):
         self.constraint_stage_config = constraint_config
