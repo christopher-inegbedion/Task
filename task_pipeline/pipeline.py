@@ -13,6 +13,7 @@ import time
 from task_pipeline.update_abclass import Observer
 import asyncio
 from constraints.enums.stage_group_status import StageGroupEnum
+from constraints.enums.stage_status import StageStatus
 
 
 class Pipeline(Observer):
@@ -148,6 +149,9 @@ class Pipeline(Observer):
 
     def get_stage(self, stage_name):
         return self.constraint_config._get_stage_with_name(stage_name)
+
+    def get_stage_group_details(self):
+        return self.constraint_config.get_stage_group_details()
 
     def init_task_for_stages(self):
         for stage in self.constraint_config.stages:
