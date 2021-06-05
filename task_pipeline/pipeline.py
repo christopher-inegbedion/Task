@@ -95,7 +95,7 @@ class Pipeline(Observer):
         self.stage_log_callback = func
         self.on_update_args = args
 
-    def on_stage_complete(self, func, stage_name="", *args):
+    def on_stage_complete(self, func, *args, stage_name="",):
         if stage_name == "":
             self.waiting_for_specific_stage = False
         else:
