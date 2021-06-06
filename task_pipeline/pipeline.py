@@ -216,6 +216,48 @@ class Pipeline(Observer):
     def pause_stage(self):
         self.current_stage.freeze()
 
+    def get_next_constraint_or_stage(self, stage_name, constraint_name):
+        all_stages = self.constraint_config.stages
+        try:
+            stage = self.get_stage(stage_name)
+        except:
+            return {"stage_name": None, "constraint_name": None}
+
+        constraints = stage.constraints
+
+        # Check if the constraint [constraint_name] is the last constraint in the stage
+        if constraints[len(constraints)-1].name == constraint_name:
+            stage_position = self._get_stage_position(stage_name)
+            # The stage [stage_name] is the last in the StageGroup
+            if stage_position == len(all_stages):
+                return {"stage_name": None, "constraint_name": None}
+            else:
+                print(stage_position)
+                return {"stage_name": all_stages[stage_position].name, "constraint_name": self._get_first_constraint_in_stage(all_stages[stage_position].name).name}
+        else:
+            constraint_position = self._get_constraint_position(
+                constraint_name, stage_name)
+            if constraint_position == None:
+                return {"stage_name": None, "constraint_name": None}
+
+            return {"stage_name": stage_name, "constraint_name": self.get_stage(stage_name).constraints[constraint_position].name}
+
+    def _get_stage_position(self, stage_name):
+        all_stages = self.constraint_config.stages
+        for i in range(len(all_stages)):
+            if all_stages[i].name == stage_name:
+                return i+1
+
+    def _get_constraint_position(self, constraint_name, stage_name):
+        stage = self.get_stage(stage_name)
+        for i in range(len(stage.constraints)):
+            if stage.constraints[i].name == constraint_name:
+                return i+1
+
+    def _get_first_constraint_in_stage(self, stage_name):
+        stage = self.get_stage(stage_name)
+        return stage.constraints[0]
+
     def log(self):
         print("----------------")
         print(
