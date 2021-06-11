@@ -218,24 +218,26 @@ class Pipeline(Observer):
 
     def get_next_constraint_or_stage(self, stage_name, constraint_name):
         all_stages = self.constraint_config.stages
-        try:
-            stage = self.get_stage(stage_name)
-        except:
-            return {"stage_name": None, "constraint_name": None}
 
         stage_position = self._get_stage_position(stage_name)
 
         stage_ = all_stages[stage_position-1]
-        constraints = stage_.constraints
-        for i in range(stage_position-1, len(all_stages)):
-            print(stage_.name)
+        for i in range(0, len(all_stages)):
+            constraints = stage_.constraints
             for constraint in constraints:
                 if stage_.name == stage_name and constraint.name != constraint_name and constraint.get_status() != ConstraintStatus.COMPLETE:
                     return {"stage_name": stage_.name, "constraint_name": constraint.name}
                 elif stage_.name != stage_name and constraint.get_status() != ConstraintStatus.COMPLETE:
                     return {"stage_name": stage_.name, "constraint_name": constraint.name}
-            stage_ = all_stages[i-1]
 
+            stage_ = all_stages[i-1]
+            constraints = stage_.constraints
+
+            for constraint in constraints:
+                if stage_.name == stage_name and constraint.name != constraint_name and constraint.get_status() != ConstraintStatus.COMPLETE:
+                    return {"stage_name": stage_.name, "constraint_name": constraint.name}
+                elif stage_.name != stage_name and constraint.get_status() != ConstraintStatus.COMPLETE:
+                    return {"stage_name": stage_.name, "constraint_name": constraint.name}
         return {"stage_name": None, "constraint_name": None}
 
         # # Check if the constraint [constraint_name] is the last constraint in the stage
