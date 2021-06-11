@@ -223,24 +223,36 @@ class Pipeline(Observer):
         except:
             return {"stage_name": None, "constraint_name": None}
 
-        constraints = stage.constraints
+        stage_position = self._get_stage_position(stage_name)
 
-        # Check if the constraint [constraint_name] is the last constraint in the stage
-        if constraints[len(constraints)-1].name == constraint_name:
-            stage_position = self._get_stage_position(stage_name)
-            # The stage [stage_name] is the last in the StageGroup
-            if stage_position == len(all_stages):
-                return {"stage_name": None, "constraint_name": None}
-            else:
-                print(stage_position)
-                return {"stage_name": all_stages[stage_position].name, "constraint_name": self._get_first_constraint_in_stage(all_stages[stage_position].name).name}
-        else:
-            constraint_position = self._get_constraint_position(
-                constraint_name, stage_name)
-            if constraint_position == None:
-                return {"stage_name": None, "constraint_name": None}
+        stage_ = all_stages[stage_position-1]
+        constraints = stage_.constraints
+        for i in range(stage_position-1, len(all_stages)):
+            print(stage_.name)
+            for constraint in constraints:
+                if stage_.name == stage_name and constraint.name != constraint_name and constraint.get_status() != ConstraintStatus.COMPLETE:
+                    return {"stage_name": stage_.name, "constraint_name": constraint.name}
+                elif stage_.name != stage_name and constraint.get_status() != ConstraintStatus.COMPLETE:
+                    return {"stage_name": stage_.name, "constraint_name": constraint.name}
+            stage_ = all_stages[i-1]
 
-            return {"stage_name": stage_name, "constraint_name": self.get_stage(stage_name).constraints[constraint_position].name}
+        return {"stage_name": None, "constraint_name": None}
+
+        # # Check if the constraint [constraint_name] is the last constraint in the stage
+        # if constraints[len(constraints)-1].name == constraint_name:
+        #     # The stage [stage_name] is the last in the StageGroup
+        #     if stage_position == len(all_stages):
+        #         return {"stage_name": None, "constraint_name": None}
+        #     else:
+        #         print(stage_position)
+        #         return {"stage_name": all_stages[stage_position].name, "constraint_name": self._get_first_constraint_in_stage(all_stages[stage_position].name).name}
+        # else:
+        #     constraint_position = self._get_constraint_position(
+        #         constraint_name, stage_name)
+        #     if constraint_position == None:
+        #         return {"stage_name": None, "constraint_name": None}
+
+        #     return {"stage_name": stage_name, "constraint_name": self.get_stage(stage_name).constraints[constraint_position].name}
 
     def _get_stage_position(self, stage_name):
         all_stages = self.constraint_config.stages

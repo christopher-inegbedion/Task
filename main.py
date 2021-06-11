@@ -137,4 +137,4 @@ pipe = Pipeline(task, sg)
 # pipe.start_constraint("s2", "con")
 # pipe.start_constraint("s2", "con2")
 
-print(pipe.get_next_constraint_or_stage("s2", "con"))
+print(pipe.get_next_constraint_or_stage("s2", "con2"))
