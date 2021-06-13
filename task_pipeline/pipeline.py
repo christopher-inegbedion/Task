@@ -222,7 +222,7 @@ class Pipeline(Observer):
         stage_position = self._get_stage_position(stage_name)
 
         initial_stage = all_stages[stage_position-1]
-        for i in range(0, len(all_stages)):
+        for i in range(stage_position, len(all_stages)):
             if initial_stage != None:
                 constraints = initial_stage.constraints
                 for constraint in constraints:
