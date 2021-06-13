@@ -92,7 +92,7 @@ constraints = {
 
 
 cons = createCon1()
-cons1 = constraints["con2"]
+cons1 = createCon2()
 cons.add_input("EUR")
 cons.add_input("USD")
 
@@ -101,6 +101,7 @@ cons1.add_input("USD")
 
 s = Stage('s')
 s.add_constraint(cons)
+s.add_constraint(cons1)
 
 s2 = Stage('s2')
 cons = createCon1()
@@ -137,7 +138,8 @@ pipe = Pipeline(task, sg)
 # pipe.start_constraint("s2", "con")
 # pipe.start_constraint("s2", "con2")
 
-pipe.start_stage("s")
+pipe.start()
+pipe.start_constraint("s", "con2")
 pipe.start_constraint("s", "con")
-time.sleep(1)
+time.sleep(2)
 print(pipe.get_next_constraint_or_stage("s", "con"))
