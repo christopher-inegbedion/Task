@@ -222,7 +222,8 @@ class Pipeline(Observer):
         stage_position = self._get_stage_position(stage_name)
 
         initial_stage = all_stages[stage_position-1]
-        for i in range(stage_position, len(all_stages)):
+        for i in range(stage_position, len(all_stages)+1):
+            print(i)
             if initial_stage != None:
                 constraints = initial_stage.constraints
                 for constraint in constraints:
@@ -237,6 +238,7 @@ class Pipeline(Observer):
             constraints = stage_.constraints
 
             for constraint in constraints:
+                print(stage_.name, constraint.name)
                 if stage_.name == stage_name and constraint.name != constraint_name and constraint.get_status() != ConstraintStatus.COMPLETE:
                     return {"stage_name": stage_.name, "constraint_name": constraint.name}
                 elif stage_.name != stage_name and constraint.get_status() != ConstraintStatus.COMPLETE:
