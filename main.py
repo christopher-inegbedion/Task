@@ -90,6 +90,8 @@ constraints = {
     "con2": createCon2()
 }
 
+def func(pipe, args):
+    print("sdf")
 
 cons = createCon1()
 cons1 = createCon2()
@@ -124,9 +126,9 @@ cons.add_configuration_input("sdsd")
 s3.add_constraint(cons)
 
 sg = StageGroup()
-# sg.add_stage(s)
+sg.add_stage(s)
 sg.add_stage(s2)
-# sg.add_stage(s3)
+sg.add_stage(s3)
 # sg.add_stage(s2)
 
 # sg.start('s')
@@ -142,6 +144,7 @@ task = Task("name", "desc")
 task.set_constraint_stage_config(sg)
 
 pipe = Pipeline(task, sg)
+pipe.on_constraint_complete(func)
 # pipe.start()
 # pipe.on_update(update)
 # pipe.start_constraint("s", "con")
@@ -149,8 +152,8 @@ pipe = Pipeline(task, sg)
 # pipe.start_constraint("s2", "con")
 # pipe.start_constraint("s2", "con2")
 
-pipe.start("s2")
-# pipe.start_constraint("s", "con2")
-# pipe.start_constraint("s", "con")
-pipe.start_constraint("s2", "con")
+pipe.start()
+pipe.start_constraint("s", "con2")
+pipe.start_constraint("s", "con")
+# pipe.start_constraint("s2", "con")
 time.sleep(1)

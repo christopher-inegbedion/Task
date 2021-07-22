@@ -75,7 +75,7 @@ class Pipeline(Observer):
             print(observer.most_recent_update)
 
         if self.specific_stage_callback is not None:
-            if most_recent_update["event"] == "STAGE_COMPLETED":
+            if most_recent_update["event"] == StageStatus.COMPLETE:
                 if self.waiting_for_specific_stage:
                     if most_recent_update["value"] == self.specific_stage_update_name:
                         self.specific_stage_callback(
@@ -85,7 +85,7 @@ class Pipeline(Observer):
                         self, self.specific_stage_args)
 
         if self.specific_constraint_callback is not None:
-            if most_recent_update["event"] == "STAGE_CONSTRAINT_COMPLETED":
+            if most_recent_update["event"] == StageStatus.CONSTRAINT_COMPLETED:
                 if self.waiting_for_specific_constraint:
                     if most_recent_update["value"]["name"] == self.on_constraint_complete_constraint_name:
                         self.specific_constraint_callback(
