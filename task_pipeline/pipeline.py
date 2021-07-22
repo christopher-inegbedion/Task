@@ -1,6 +1,5 @@
 import threading
 from constraints.enums.constraint_status import ConstraintStatus
-from constraints.enums.stage_events import StageEvents
 from inventory_main.inventory import Entry
 from task_main.enums.mode_of_execution import ModeOfExecution
 from stage.stage import Stage, StageGroup
@@ -17,27 +16,30 @@ from constraints.enums.stage_status import StageStatus
 
 
 class Pipeline(Observer):
-    def __init__(self, task: Task, constraint_config: StageGroup, display_log=False):
+    def __init__(self, task: Task, stage_group: StageGroup, display_log=False):
+        # Identifies the Pipelie
         self.id = str(uuid.uuid4())
-        self.date_started = time.time()
-        self.current_stage: Stage = None
-        self.task = task
-        self.constraint_config = constraint_config
-        self.all_inputs_passed = []
 
-        self.init_task_for_stages()
-        self.set_pipeline_for_stages()
+        # Keeps track of when the pipeline started
+        self.date_started = time.time()
+
+        # The current stage of the pipeline instance
+        self.current_stage: Stage = None
+
+        # The task with the current pipeline instance
+        self.task = task
+
+        # The stage group stores all the stages
+        self.stage_group = stage_group
 
         self.thread_ref = None
+
+        # Describes if the Pipeline should display log messages
         self._display_log = display_log
 
         # pipeline user information
         self.customer_user_id = None
         self.service_provider_user_id = None
-
-        if self.task == None:
-            raise Exception(
-                "The task passed to the Pipeline object cannot be null")
 
         self.stage_log_callback = None
         self.on_update_args = None
@@ -56,6 +58,14 @@ class Pipeline(Observer):
         self.specific_constraint_args = None
 
         self.async_func = False
+
+        # A task has to be passed to the Pipeline
+        if self.task == None:
+            raise Exception(
+                "The task passed to the Pipeline object cannot be null")
+
+        self.init_task_for_stages()
+        self.set_pipeline_for_stages()
 
     def update(self, observer) -> None:
         """Notifies the Stage of a change in the Constraint"""
@@ -88,7 +98,7 @@ class Pipeline(Observer):
             self.stage_log_callback(self, self.on_update_args)
 
         if self.pipeline_complete_callback is not None:
-            if self.constraint_config.status == StageGroupEnum.COMPLETE:
+            if self.stage_group.status == StageGroupEnum.COMPLETE:
                 self.pipeline_complete_callback(self, self.on_complete_args)
 
     def on_update(self, func, *args):
@@ -126,7 +136,7 @@ class Pipeline(Observer):
         self.service_provider_user_id = id
 
     def set_pipeline_for_stages(self):
-        for stage in self.constraint_config.stages:
+        for stage in self.stage_group.stages:
             stage.set_pipeline(self)
 
     def is_input_req_for_constraint(self, constraint_name, stage_name):
@@ -136,7 +146,6 @@ class Pipeline(Observer):
     def add_input_to_constraint(self, constraint_name, stage_name, input):
         constraint = self.get_constraint(constraint_name, stage_name)
         constraint.add_input(input)
-        self.all_inputs_passed.append(input)
 
     def get_number_of_inputs_required_by_constraints(self, constraint_name, stage_name):
         constraint = self.get_constraint(constraint_name, stage_name)
@@ -148,14 +157,14 @@ class Pipeline(Observer):
         return constraint
 
     def get_stage(self, stage_name):
-        return self.constraint_config._get_stage_with_name(stage_name)
+        return self.stage_group._get_stage_with_name(stage_name)
 
     def get_stage_group_details(self):
-        return self.constraint_config.get_stage_group_details()
+        return self.stage_group.get_stage_group_details()
 
     def init_task_for_stages(self):
-        for stage in self.constraint_config.stages:
-            self.constraint_config.set_task_for_stage(stage.name, self.task)
+        for stage in self.stage_group.stages:
+            self.stage_group.set_task_for_stage(stage.name, self.task)
 
     def get_task_name(self):
         return self.task.name
@@ -189,35 +198,35 @@ class Pipeline(Observer):
         return active_constraints
 
     def start_constraint(self, stage_name, constraint_name):
-        self.constraint_config._get_stage_with_name(stage_name).start_constraint(
+        self.stage_group._get_stage_with_name(stage_name).start_constraint(
             constraint_name)
 
     def stop_constraint(self, stage_name, constraint_name):
-        self.constraint_config._get_stage_with_name(
+        self.stage_group._get_stage_with_name(
             stage_name).stop_constraint(constraint_name)
 
     def _start(self, stage_name=""):
-        self.constraint_config.start(stage_name)
+        self.stage_group.start(stage_name)
 
     def start(self, stage_name=""):
         self.thread_ref = threading.Thread(
-            target=self._start, args=stage_name)
+            target=self._start, args=[stage_name])
         self.thread_ref.start()
 
     def start_stage(self, stage_name):
-        self.constraint_config.start(stage_name)
+        self.stage_group.start(stage_name)
 
     def abort(self):
-        self.constraint_config.stop_all()
+        self.stage_group.stop_all()
 
     def stop_stage(self, stage_name):
-        self.constraint_config.stop_stage(stage_name)
+        self.stage_group.stop_stage(stage_name)
 
     def pause_stage(self):
         self.current_stage.freeze()
 
     def get_next_constraint_or_stage(self, stage_name, constraint_name):
-        all_stages = self.constraint_config.stages
+        all_stages = self.stage_group.stages
 
         stage_position = self._get_stage_position(stage_name)
 
@@ -262,7 +271,7 @@ class Pipeline(Observer):
         #     return {"stage_name": stage_name, "constraint_name": self.get_stage(stage_name).constraints[constraint_position].name}
 
     def _get_stage_position(self, stage_name):
-        all_stages = self.constraint_config.stages
+        all_stages = self.stage_group.stages
         for i in range(len(all_stages)):
             if all_stages[i].name == stage_name:
                 return i+1
@@ -295,7 +304,7 @@ class Pipeline(Observer):
             product_task.inventory.log()
 
         print("\n--Task's Constraint/Stage configuration--")
-        for stage in self.constraint_config.stages:
+        for stage in self.stage_group.stages:
             print(f"STAGE name: {stage.name}")
             for cnstrt in stage.constraints:
                 print(f"\t>>CONSTRAINT name: {cnstrt.name}")
