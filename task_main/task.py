@@ -1,3 +1,4 @@
+from task_main.weight_property import WeightProperty
 import uuid
 import time
 from task_main.enums.task_type import *
@@ -40,6 +41,9 @@ class Task(ABC):
 
         # A link to the assets used by the task
         self.graphical_assets = None
+
+        # Task properties
+        self.properties = [WeightProperty()]
 
     def change_name(self, name):
         self.name = name
