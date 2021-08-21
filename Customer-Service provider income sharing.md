@@ -20,7 +20,11 @@ The profit cut-off amount specifies the amount of initial profit that is retaine
 
 ### **Income share bucket amount**
 
-This is the amount of money that will be paid back to the shareholders, after the profit cut-off amount has been surpassed. Every amount of extra profit made by the service provider will be added to the Income share bucket amount until the specified maximum amount is reached then the remaining will return to the Service provider. Example: If the Income share bucket amount is £200 and the profict cut-off amount is £100, and the Service provider made £500 for that month, this means that the first £100 of the £500 will be kept by the Service provider, then the next £200 of the £500 will be shared amongst the shareholders, and then finally the remaining amount (£200) will be kept by the Service provider. Example 2: If the Income share bucket amount is £200 and the profit cut-off amount is £100, and the service provider only made £100. The service provider will still keep the £100 because it is within the profit cut-off range, but the Customer's will have not receive any money because the money made by the Service provider was not enough to reach the Income share bucket range.
+This is the amount of money that will be paid back to the shareholders, after the profit cut-off amount has been surpassed. Every amount of extra profit made by the service provider will be added to the Income share bucket amount until the specified maximum amount is reached then the remaining will return to the Service provider. 
+
+**Example**: If the Income share bucket amount is £200 and the profict cut-off amount is £100, and the Service provider made £500 for that month, this means that the first £100 of the £500 will be kept by the Service provider, then the next £200 of the £500 will be shared amongst the shareholders, and then finally the remaining amount (£200) will be kept by the Service provider. 
+
+**Example 2**: If the Income share bucket amount is £200 and the profit cut-off amount is £100, and the Service provider made £100 for that month. The service provider will still keep the £100 because it is within the profit cut-off range, but the Customer's will not receive any money because the money made by the Service provider was not enough to reach the Income share bucket range.
 
 ### **How is the money distributed**
 
