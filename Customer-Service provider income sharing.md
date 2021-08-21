@@ -35,12 +35,12 @@ Each service provider sets a challenge for each shareholder that has to fulfille
 
 The benefits of the CSIS program includes:
 
-- Recurring monthly revenue for Service provider (Income generation - Service provider)
-- Customers can benefit from their favorite buisness doing well (Income generation - Customer)
+- Recurring monthly revenue for Service provider (Income generation: Service provider)
+- Customers benefit financially from their favorite buisness doing well (Income generation: Customer)
 - Service providers are able to grow their buisness and reach new customers (Buisness growth)
-- It gives small/not well known buisness the oppurtunity to have their buisnesses become popular by offering a lucrative deal to the Customer. (Brand growth)
+- It gives small/not well known buisness the oppurtunity to have their buisnesses become popular by offering a lucrative deal to interested customers. (Brand growth)
 
-The main benefits of the CSIS are Income generation, as now Service providers are able to have a secondary source of Income plus new monthly customers and on the other hand the customer is able to benefit from a buisnesses boom in popularity.
+The main benefit of the CSIS is Income generation, as now Service providers are able to have a secondary source of Income plus new monthly customers and on the other hand the customer is able to benefit financially from a buisnesses boom in popularity.
 
 ## How is this different from an Affiliate program
 
