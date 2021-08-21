@@ -43,7 +43,9 @@ class Task(ABC):
         self.graphical_assets = None
 
         # Task properties
-        self.properties = [WeightProperty()]
+        self.properties = {
+            WeightProperty().name: WeightProperty()
+        }
 
     def change_name(self, name):
         self.name = name
@@ -70,3 +72,32 @@ class Task(ABC):
 
     def get_stage_group_details(self):
         return self.constraint_config.get_stage_group_details()
+
+    def get_all_properties(self) -> list:
+        """Return the names of all the properties"""
+        properties = []
+        for property in self.properties:
+            properties.append(property.name)
+
+        return properties
+
+    def get_property_denominations(self, name):
+        """Return the denomination for a property"""
+        if name in self.properties:
+            return self.properties[name].denominations
+
+        raise Exception(f"Property with name: {name} cannot be found")
+
+    def set_property_value(self, name, value):
+        """Set the value of a property"""
+        if name in self.properties:
+            self.properties[name].value = value
+        else:
+            raise Exception(f"Property with name: {name} cannot be found")
+
+    def set_property_denom(self, name, denom):
+        """Set the denomination of a property"""
+        if name in self.properties:
+            self.properties[name].selected_denom = denom
+        else:
+            raise Exception(f"Property with name: {name} cannot be found")
