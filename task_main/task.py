@@ -9,7 +9,9 @@ from stage.stage import StageGroup
 
 
 class Task(ABC):
-    """Abstract Task class"""
+    properties = {
+        WeightProperty().name: WeightProperty()
+    }
 
     def __init__(self, name, description):
         # Unique ID for the task
@@ -43,9 +45,7 @@ class Task(ABC):
         self.graphical_assets = None
 
         # Task properties
-        self.properties = {
-            WeightProperty().name: WeightProperty()
-        }
+        self.selected_properties = []
 
     def change_name(self, name):
         self.name = name
@@ -73,31 +73,43 @@ class Task(ABC):
     def get_stage_group_details(self):
         return self.constraint_config.get_stage_group_details()
 
-    def get_all_properties(self) -> list:
+    @classmethod
+    def get_available_properties(cls) -> list:
         """Return the names of all the properties"""
         properties = []
-        for property in self.properties:
-            properties.append(property.name)
+        for property in cls.properties:
+            properties.append(property)
 
         return properties
 
-    def get_property_denominations(self, name):
+    @classmethod
+    def get_property_denominations(cls, name):
         """Return the denomination for a property"""
-        if name in self.properties:
-            return self.properties[name].denominations
+        if name in cls.properties:
+            return cls.properties[name].denominations
 
         raise Exception(f"Property with name: {name} cannot be found")
 
-    def set_property_value(self, name, value):
-        """Set the value of a property"""
+    def add_property(self, name: str, value, denom):
+        """Add a property to the task"""
         if name in self.properties:
-            self.properties[name].value = value
+            property = self.properties[name]
+            property.value = value
+            property.selected_denom = denom
+            self.selected_properties.append(
+                property
+            )
         else:
             raise Exception(f"Property with name: {name} cannot be found")
 
-    def set_property_denom(self, name, denom):
-        """Set the denomination of a property"""
-        if name in self.properties:
-            self.properties[name].selected_denom = denom
-        else:
-            raise Exception(f"Property with name: {name} cannot be found")
+    def get_selected_properties(self):
+        """Return all properties"""
+        all_properties = {}
+        for property in self.selected_properties:
+            all_properties[property.name] = {
+                "name": property.name,
+                "value": property.value,
+                "denomination": property.selected_denom
+            }
+
+        return all_properties

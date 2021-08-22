@@ -90,8 +90,10 @@ constraints = {
     "con2": createCon2()
 }
 
+
 def func(pipe, args):
     print("sdf")
+
 
 cons = createCon1()
 cons1 = createCon2()
@@ -139,6 +141,9 @@ def update(pipe, args):
 # s.start_constraint("con")
 # s.start_constraint("con2")
 
+task = Task("sd", "sf")
+task.add_property("Weight", 30, "kg")
+print(task.get_selected_properties())
 
 task = Task("name", "desc")
 task.set_constraint_stage_config(sg)
@@ -152,8 +157,8 @@ pipe.on_constraint_complete(func)
 # pipe.start_constraint("s2", "con")
 # pipe.start_constraint("s2", "con2")
 
-pipe.start()
-pipe.start_constraint("s", "con2")
-pipe.start_constraint("s", "con")
-# pipe.start_constraint("s2", "con")
-time.sleep(1)
+# pipe.start()
+# pipe.start_constraint("s", "con2")
+# pipe.start_constraint("s", "con")
+# # pipe.start_constraint("s2", "con")
+# time.sleep(1)
