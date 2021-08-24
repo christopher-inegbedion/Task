@@ -1,3 +1,4 @@
+from task_main.volume_property import VolumeProperty
 from task_main.weight_property import WeightProperty
 import uuid
 import time
@@ -10,7 +11,8 @@ from stage.stage import StageGroup
 
 class Task(ABC):
     properties = {
-        WeightProperty().name: WeightProperty()
+        WeightProperty().name: WeightProperty(),
+        VolumeProperty().name: VolumeProperty()
     }
 
     def __init__(self, name, description):
