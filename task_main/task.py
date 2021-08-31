@@ -14,6 +14,7 @@ class Task(ABC):
         WeightProperty().name: WeightProperty(),
         VolumeProperty().name: VolumeProperty()
     }
+    currencies = ["USD", "GBP", "EUR"]
 
     def __init__(self, name, description):
         # Unique ID for the task
@@ -40,6 +41,15 @@ class Task(ABC):
         # How the task will be provided to the customer
         self.mode_of_execution: ModeOfExecution = None
 
+        # The price of the task
+        self.price: float = None
+
+        # The currency of the task
+        self.currency = None
+
+        # Determines if the task has been paid for
+        self.paid: bool = False
+
         # The constraint for the customer to provide compensation for the service/product they recieved. This could be monetary or otherwise.
         self.price_constraint: Constraint = None
 
@@ -54,6 +64,20 @@ class Task(ABC):
 
     def change_desc(self, desc):
         self.description = desc
+
+    def toggle_paid_val(self, value: bool):
+        """Toggle the paid property of the constraint"""
+        self.paid = not self.paid
+
+    def set_currency(self, currency: str):
+        """Sets the currency of the task"""
+        if currency in self.currencies:
+            self.currency = currency
+
+    def set_price(self, price: float):
+        """Set the price of the task"""
+        if self.price == None:
+            self.price = price
 
     def add_constraint_to_stage(self, constraint, stage_name):
         self.constraint_stage_config._get_stage_with_name(
