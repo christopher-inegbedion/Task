@@ -50,8 +50,11 @@ class Task(ABC):
         # Determines if the task has been paid for
         self.paid: bool = False
 
-        # The constraint for the customer to provide compensation for the service/product they recieved. This could be monetary or otherwise.
+        # The constraint for the customer to provide payment for the service/product they recieved. This could be monetary or otherwise.
         self.price_constraint: Constraint = None
+
+        # The stage the payment constraint will be in
+        self.price_constraint_stage = None
 
         # A link to the assets used by the task
         self.graphical_assets = None
