@@ -197,6 +197,14 @@ class Pipeline(Observer):
 
         return active_constraints
 
+    def add_constraint_to_stage(self, constraint: Constraint, stage_name: str):
+        """Add a constraint to a stage"""
+        self.get_stage(
+            stage_name).add_constraint(constraint)
+        self.task.set_constraint_stage_config(self.stage_group)
+        self.init_task_for_stages()
+        self.set_pipeline_for_stages()
+
     def start_constraint(self, stage_name, constraint_name):
         self.stage_group._get_stage_with_name(stage_name).start_constraint(
             constraint_name)
